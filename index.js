@@ -10,12 +10,13 @@ const render = require("./src/page-template.js");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-// Initialise the team output
+// Initialise the team output array to be used in the render function
 let team = [];
 
-// 1. Create the initial prompt - manager information
+// 1) Create the initial prompt to gather manager information
 startProgram();
 function startProgram() {
+  // a. Prompt user information about the manager
   inquirer
     .prompt([
       {
@@ -51,6 +52,7 @@ function startProgram() {
         },
       },
     ])
+    // b. Create a new instance of the manager class with user information
     .then((answers) => {
       const newManager = new Manager(
         answers.name,
@@ -58,14 +60,16 @@ function startProgram() {
         answers.email,
         answers.officeNumber
       );
-      // Push the prompt information to the team array
+      // c. Push the prompt user information to the team array
       team.push(newManager);
+      // d. Display the menu options
       menu();
     });
 }
 
-// 2. Create menu function
+// 2) Create menu function
 function menu() {
+  // a. Provide the menu options to user
   inquirer
     .prompt({
       type: "list",
@@ -73,7 +77,7 @@ function menu() {
       message: "What do you want to do next?",
       choices: ["Add an engineer", "Add an intern", "Finish building the team"],
     })
-    // Conditional to determine the outcome of each option
+    // b. Conditional to determine the outcome of each option
     .then((answers) => {
       switch (answers.options) {
         case "Add an engineer":
@@ -88,8 +92,9 @@ function menu() {
       }
     });
 }
-// 2. Create the engineer function
+// 3) Create the engineer function
 function addEngineer() {
+  // a. Prompt user information about the engineer
   inquirer
     .prompt([
       {
@@ -122,6 +127,7 @@ function addEngineer() {
         message: "What is the engineer's github username?",
       },
     ])
+    // b. Create a new instance from the engineer class
     .then((answers) => {
       const newEngineer = new Engineer(
         answers.name,
@@ -129,15 +135,16 @@ function addEngineer() {
         answers.email,
         answers.github
       );
-      // Push the prompt information to the team array
+      // c. Push the prompt information to the team array
       team.push(newEngineer);
-      // Go back to the menu
+      // d. Go back to the menu
       menu();
     });
 }
 
-// 3. Create the intern function
+// 4) Create the intern function
 function addIntern() {
+  // a. Prompt user information about the intern
   inquirer
     .prompt([
       {
@@ -170,6 +177,7 @@ function addIntern() {
         message: "What is the name of the intern's School?",
       },
     ])
+    // b. Create the new instance from the intern class
     .then((answers) => {
       const newIntern = new Intern(
         answers.name,
@@ -177,19 +185,19 @@ function addIntern() {
         answers.email,
         answers.school
       );
-      // Push the prompt information to the team array
+      // c. Push the prompt information to the team array
       team.push(newIntern);
-      // Go back to the menu
+      // d. Go back to the menu
       menu();
     });
 }
 
-// 4. Create the build team function
+// 5). Create the build team function
 function buildTeam() {
-  // Check if the directory already exists, if not create it
+  // a. Check if the directory already exists, if not create it
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
   }
-  // Render the team to the page
+  // b. Render the team to the page using the render function
   fs.writeFileSync(outputPath, render(team), "utf8");
 }
